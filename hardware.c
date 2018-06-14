@@ -144,13 +144,15 @@ void setupCLK(void) {
     while ((GET_REG(RCC_CFGR) & 0x00000008) == 0); /* wait for it to come on */
 
     pRCC->APB2ENR |= 0B111111100;// Enable All GPIO channels (A to G)
+    pRCC->APB2ENR |= 0B1; // Enable the AFIO clock
     pRCC->APB1ENR |= RCC_APB1ENR_USB_CLK;
 }
 
 
 void setupLEDAndButton (void) {
-    // SET_REG(AFIO_MAPR,(GET_REG(AFIO_MAPR) & ~AFIO_MAPR_SWJ_CFG) | AFIO_MAPR_SWJ_CFG_NO_JTAG_NO_SW);// Try to disable SWD AND JTAG so we can use those pins (not sure if this works).
-
+    
+    SET_REG(AFIO_MAPR,(GET_REG(AFIO_MAPR) & ~AFIO_MAPR_SWJ_CFG) | AFIO_MAPR_SWJ_CFG_NO_JTAG_NO_SW); // Disable SWD AND JTAG
+    
 #if defined(BUTTON_BANK) && defined (BUTTON_PIN) && defined (BUTTON_PRESSED_STATE)
     SET_REG(GPIO_CR(BUTTON_BANK,BUTTON_PIN),(GPIO_CR(BUTTON_BANK,BUTTON_PIN) & crMask(BUTTON_PIN)) | BUTTON_INPUT_MODE << CR_SHITF(BUTTON_PIN));
 
